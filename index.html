@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BUMP — Move Faster Onchain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #050505;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(120px);
+      opacity: 0.35;
+    }
+
+    .glow-1 {
+      width: 500px;
+      height: 500px;
+      background: #d9ff00;
+      top: -120px;
+      left: -120px;
+    }
+
+    .glow-2 {
+      width: 500px;
+      height: 500px;
+      background: #55f2c4;
+      top: 10%;
+      right: -120px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 0;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-wrap img {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      box-shadow: 0 0 40px rgba(217,255,0,.18);
+    }
+
+    .logo-title {
+      font-size: 28px;
+      font-weight: 900;
+      font-style: italic;
+    }
+
+    .logo-sub {
+      color: #d9ff00;
+      font-size: 11px;
+      letter-spacing: .22em;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      font-weight: 700;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,.7);
+      text-decoration: none;
+      transition: .25s ease;
+    }
+
+    .nav-links a:hover {
+      color: #d9ff00;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: .25s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #d9ff00 0%, #55f2c4 100%);
+      color: black;
+      box-shadow: 0 0 40px rgba(217,255,0,.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      border: 1px solid rgba(255,255,255,.14);
+      color: white;
+      background: rgba(255,255,255,.04);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 64px;
+      align-items: center;
+      padding: 80px 0 110px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(217,255,0,.25);
+      background: rgba(217,255,0,.08);
+      color: #d9ff00;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 28px;
+      font-size: 92px;
+      line-height: .9;
+      font-weight: 900;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #d9ff00 0%, #55f2c4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      margin-top: 28px;
+      font-size: 19px;
+      line-height: 1.8;
+      color: rgba(255,255,255,.7);
+      max-width: 640px;
+    }
+
+    .hero-actions {
+      margin-top: 38px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-image {
+      position: relative;
+    }
+
+    .hero-card {
+      position: relative;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 40px;
+      padding: 16px;
+      backdrop-filter: blur(20px);
+    }
+
+    .hero-card img {
+      width: 100%;
+      border-radius: 28px;
+      display: block;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+      margin-top: 42px;
+      max-width: 560px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 22px;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .stat-card h3 {
+      color: #d9ff00;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    section {
+      padding: 90px 0;
+    }
+
+    .section-title {
+      font-size: 62px;
+      line-height: .95;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-style: italic;
+      margin-top: 20px;
+    }
+
+    .section-sub {
+      color: rgba(255,255,255,.65);
+      line-height: 1.8;
+      margin-top: 18px;
+      max-width: 700px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 22px;
+      margin-top: 50px;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      padding: 28px;
+    }
+
+    .feature-card h3 {
+      margin-top: 18px;
+      font-size: 22px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .feature-card p {
+      margin-top: 12px;
+      line-height: 1.7;
+      color: rgba(255,255,255,.65);
+      font-size: 15px;
+    }
+
+    .emoji {
+      font-size: 34px;
+    }
+
+    .screens {
+      display: grid;
+      gap: 24px;
+      margin-top: 50px;
+    }
+
+    .screens img,
+    .brand-image img {
+      width: 100%;
+      display: block;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 28px;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .info-card {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 34px;
+      padding: 38px;
+    }
+
+    .info-card h3 {
+      margin-top: 24px;
+      font-size: 52px;
+      line-height: .95;
+      font-style: italic;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .info-card p {
+      margin-top: 24px;
+      color: rgba(255,255,255,.68);
+      line-height: 1.8;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 16px;
+      margin-top: 34px;
+    }
+
+    .mini-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.08);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .cta {
+      background: linear-gradient(135deg, #d9ff00 0%, #55f2c4 100%);
+      padding: 1px;
+      border-radius: 42px;
+      overflow: hidden;
+      box-shadow: 0 0 80px rgba(217,255,0,.15);
+    }
+
+    .cta-inner {
+      background: #050505;
+      border-radius: 41px;
+      padding: 60px;
+      display: grid;
+      grid-template-columns: 1fr .8fr;
+      gap: 50px;
+    }
+
+    .cta h2 {
+      font-size: 72px;
+      line-height: .92;
+      text-transform: uppercase;
+      font-style: italic;
+      font-weight: 900;
+    }
+
+    .cta p {
+      margin-top: 24px;
+      line-height: 1.8;
+      color: rgba(255,255,255,.68);
+      font-size: 18px;
+    }
+
+    .launch-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .launch-item {
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+    }
+
+    .ready {
+      color: #d9ff00;
+    }
+
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid rgba(255,255,255,.08);
+      margin-top: 80px;
+    }
+
+    .footer-wrap {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255,255,255,.5);
+      font-size: 14px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .split-grid,
+      .cta-inner,
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 72px;
+      }
+
+      .section-title,
+      .cta h2,
+      .info-card h3 {
+        font-size: 52px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      h1 {
+        font-size: 54px;
+      }
+
+      .section-title,
+      .cta h2,
+      .info-card h3 {
+        font-size: 42px;
+      }
+
+      .stats,
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-inner {
+        padding: 36px;
+      }
+
+      .footer-wrap {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow">
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+  </div>
+
+  <div class="container">
+    <nav>
+      <div class="logo-wrap">
+        <img src="assets/bump-logo.png" alt="BUMP Logo">
+        <div>
+          <div class="logo-title">BUMP</div>
+          <div class="logo-sub">Move Faster Onchain</div>
+        </div>
+      </div>
+
+      <div class="nav-links">
+        <a href="#screens">Screens</a>
+        <a href="#features">Features</a>
+        <a href="#launch">Launch</a>
+      </div>
+
+      <a href="#launch" class="btn btn-primary">Launch App</a>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="badge">Solana dApp Built For Seeker</div>
+
+        <h1>
+          Move Faster
+          <span class="gradient-text">Onchain.</span>
+        </h1>
+
+        <p>
+          BUMP is a mobile-first financial operating system for Web3 creators. Send payments, split earnings, launch drops, reward fans, and manage your creator economy from one Seeker-native experience.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#launch" class="btn btn-primary">Connect Seeker Wallet</a>
+          <a href="#screens" class="btn btn-secondary">View Screens</a>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <h3>Fast</h3>
+          </div>
+          <div class="stat-card">
+            <h3>Mobile First</h3>
+          </div>
+          <div class="stat-card">
+            <h3>Built On Solana</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-image">
+        <div class="hero-card">
+          <img src="assets/bump-screens-1-4.png" alt="BUMP Screenshots">
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="badge">Core Features</div>
+      <h2 class="section-title">The Financial Layer For Creators</h2>
+      <p class="section-sub">
+        BUMP combines creator monetization, instant payments, tokenized access, drops, and mobile-first wallet infrastructure into one seamless ecosystem.
+      </p>
+
+      <div class="features">
+        <div class="feature-card">
+          <div class="emoji">⚡</div>
+          <h3>Built For Speed</h3>
+          <p>Fast taps, instant movement, and wallet-native flows optimized for Seeker devices.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="emoji">📱</div>
+          <h3>Mobile Native</h3>
+          <p>Designed around the Solana Mobile ecosystem from the very first interaction.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="emoji">💸</div>
+          <h3>BUMP Pay</h3>
+          <p>Instant creator payments, fan support, and frictionless value transfer onchain.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="emoji">🎟️</div>
+          <h3>Fan Access</h3>
+          <p>Reward communities through fan passes, exclusive drops, and unlockable perks.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screens">
+      <div class="badge">App Experience</div>
+      <h2 class="section-title">Eight Screens. One Flow.</h2>
+      <p class="section-sub">
+        Every screen is designed to feel premium, fast, and intuitive for the next generation of mobile-native creators.
+      </p>
+
+      <div class="screens">
+        <img src="assets/bump-screens-1-4.png" alt="BUMP Screens 1-4">
+        <img src="assets/bump-screens-5-8.png" alt="BUMP Screens 5-8">
+      </div>
+    </section>
+
+    <section>
+      <div class="split-grid">
+        <div class="info-card">
+          <div class="badge">Creator Economy OS</div>
+
+          <h3>Pay. Split. Earn. Drop.</h3>
+
+          <p>
+            BUMP transforms Solana into a creator operating system. Fans support instantly, collaborators receive transparent splits, creators launch drops, and everything is tracked in one seamless activity layer.
+          </p>
+
+          <div class="info-grid">
+            <div class="mini-card">BUMP Pay</div>
+            <div class="mini-card">Split Engine</div>
+            <div class="mini-card">Fan Pass</div>
+            <div class="mini-card">Launch Center</div>
+          </div>
+        </div>
+
+        <div class="brand-image">
+          <img src="assets/bump-brand-deck.png" alt="BUMP Brand Deck">
+        </div>
+      </div>
+    </section>
+
+    <section id="launch">
+      <div class="cta">
+        <div class="cta-inner">
+          <div>
+            <div class="badge">Launch Ready</div>
+
+            <h2>Built For Seeker. Made For The Future.</h2>
+
+            <p>
+              Launch a premium Solana Mobile dApp with wallet-native onboarding, creator monetization, fan rewards, drops, and a streamlined dApp Store-ready experience.
+            </p>
+          </div>
+
+          <div class="launch-list">
+            <div class="launch-item">
+              <span>Android Build</span>
+              <span class="ready">Ready</span>
+            </div>
+
+            <div class="launch-item">
+              <span>Wallet Integration</span>
+              <span class="ready">Ready</span>
+            </div>
+
+            <div class="launch-item">
+              <span>Store Assets</span>
+              <span class="ready">Ready</span>
+            </div>
+
+            <div class="launch-item">
+              <span>Publisher Portal</span>
+              <span>Next</span>
+            </div>
+
+            <div class="launch-item">
+              <span>Review & Submit</span>
+              <span>Next</span>
+            </div>
+
+            <a href="#" class="btn btn-primary" style="margin-top:16px; width:100%;">Start The BUMP</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-wrap">
+        <div>BUMP — Move Faster Onchain.</div>
+        <div>Built for Seeker. Built for the next generation.</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
